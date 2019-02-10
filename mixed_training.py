@@ -28,7 +28,7 @@ args = vars(ap.parse_args())
 # construct the path to the input .txt file that contains information
 # on each house in the dataset and then load the dataset
 print("[INFO] loading house attributes...")
-inputPath = "/media/pranoy/New Volume1/truesight/training.csv"
+inputPath = "/media/pranoy/New Volume1/truesight/data/training.csv"
 df = datasets.load_attributes(inputPath)
 
 # load the house images and then scale the pixel intensities to the
