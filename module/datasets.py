@@ -7,14 +7,14 @@ import glob
 import cv2
 import os
 
-def load_house_attributes(inputPath):
-    cols = ["image_name", "x1", "x2", "y1", "y2"]
-	df = pd.read_csv(inputPath, sep=" ", header=None, names=cols)
+def load_attributes(inputPath):
+    cols = ["x1", "x2", "y1", "y2"]
+	df = pd.read_csv(inputPath, header=None, names=cols)
 	# return the data frame
 	return df
 
 
-def load_house_images(inputPath):
+def load_images(inputPath):
 	# initialize our images array
 	images = []
     # loop over the indexes of the houses
