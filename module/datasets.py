@@ -14,13 +14,13 @@ def load_attributes(inputPath):
     return df
 
 
-    def load_images(inputPath):
-        # initialize our images array
-        images = []
-        # loop over the indexes of the houses
-        for filename in os.listdir(inputPath):
-            img = cv2.imread(os.path.join(inputPath,filename))
-            c=cv2.resize(img, (64,64))
-            images.append(c)
-            # return our set of images
-            return np.array(images)
+def load_images(inputPath):
+    # initialize our images array
+    images = []
+    # loop over the indexes of the houses
+    for filename in os.listdir(inputPath):
+        img = cv2.imread(os.path.join(inputPath,filename))
+        c=cv2.resize(img, (64,64))
+        images.append(c)
+        # return our set of images
+        return np.array(images)
