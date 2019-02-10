@@ -22,7 +22,7 @@ miou_metric = iou.MeanIoU(num_classes)
 '''
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", type=str, required=True,
-	help="path to input dataset of house images")
+help="path to input dataset of house images")
 args = vars(ap.parse_args())
 '''
 # construct the path to the input .txt file that contains information
@@ -96,9 +96,9 @@ model.compile(optimizer='adam', loss="mean_absolute_percentage_error", metrics=[
 # train the model
 print("[INFO] training model...")
 model.fit(
-	[trainAttrX, trainImagesX], [trainY1,trainY2,trainY3,trainY4],
-	validation_data=([testAttrX, testImagesX], [testY1,testY2,testY3,testY4]),
-	epochs=200, batch_size=8)
+[trainAttrX, trainImagesX], [trainY1,trainY2,trainY3,trainY4],
+validation_data=([testAttrX, testImagesX], [testY1,testY2,testY3,testY4]),
+epochs=200, batch_size=8)
 
 # make predictions on the testing data
 print("[INFO] predicting house prices...")
@@ -119,7 +119,7 @@ std = np.std(absPercentDiff)
 # finally, show some statistics on our model
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 print("[INFO] avg. house price: {}, std house price: {}".format(
-	locale.currency(df["price"].mean(), grouping=True),
-	locale.currency(df["price"].std(), grouping=True)))
+locale.currency(df["price"].mean(), grouping=True),
+locale.currency(df["price"].std(), grouping=True)))
 print("[INFO] mean: {:.2f}%, std: {:.2f}%".format(mean, std))
 '''
