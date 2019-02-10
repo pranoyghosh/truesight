@@ -8,23 +8,26 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.layers import concatenate
 import numpy as np
+import pandas as pd
 #import argparse
 import locale
 import os
 from keras.models import model_from_json
 
 print("[INFO] loading attributes...")
-inputPath = "/media/pranoy/New Volume1/truesight/data/test.csv"
-df = datasets.load_attributes(inputPath)
-
+trainPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/training.csv"
+inputPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test.csv"
+cols =["image_name"]
+df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
+df2 = datasets.load_attributes(trainPath)
 # load the house images and then scale the pixel intensities to the
 # range [0, 1]
 print("[INFO] loading images...")
-img_data = "/media/pranoy/New Volume1/truesight/data/test"
-images = datasets.load_images(img_data)
+img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test"
+images = datasets.load_images(inputPath, img_data)
 images = images / 255.0
 
-testAttrX = df
+#testAttrX = df
 testImagesX = images
 # load json and create model
 json_file = open('model.json', 'r')
@@ -37,5 +40,28 @@ print("Loaded model from disk")
 
 # make predictions on the testing data
 print("[INFO] predicting bounding boxes...")
-preds = loaded_model.predict([testAttrX, testImagesX])
-preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
+preds = loaded_model.predict(testImagesX)
+testY1 = preds[0]
+testY2 = preds[1]
+testY3 = preds[2]
+testY4 = preds[3]
+testY1 = testY1.flatten()
+testY2 = testY2.flatten()
+testY3 = testY3.flatten()
+testY4 = testY4.flatten()
+print(testY1.shape)
+
+maxX1 = df2["x1"].max()
+testY1 = testY1 * maxX1
+maxX2 = df2["x2"].max()
+testY2 = testY2 * maxX2
+maxY1 = df2["y1"].max()
+testY3 = testY3 * maxY1
+maxY2 = df2["y2"].max()
+testY4 = testY4 * maxY2
+
+#preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
+dfx = pd.DataFrame({"name" : df["image_name"], "x1" : testY1, "x2" : testY2, "y1" : testY3, "y2" : testY4})
+dfx.to_csv("test.csv")
+
+print('Predictions saved')

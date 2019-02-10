@@ -9,16 +9,18 @@ import os
 
 def load_attributes(inputPath):
     cols = ["x1", "x2", "y1", "y2"]
-    df = pd.read_csv(inputPath, header=None, names=cols)
+    df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
     # return the data frame
     return df
 
 
-def load_images(inputPath):
+def load_images(inpdf, inputPath):
     # initialize our images array
     images = []
+    cols =["image_name"]
+    df = pd.read_csv(inpdf, skiprows=[0], header=None, names=cols)
     # loop over the indexes of the houses
-    for filename in os.listdir(inputPath):
+    for filename,p,n,e in df.index.values:
         img = cv2.imread(os.path.join(inputPath,filename))
         c=cv2.resize(img, (64,64))
         images.append(c)

@@ -20,8 +20,8 @@ def create_mlp(dim, regress=False):
     if regress:
         model.add(Dense(1, activation="linear"))
 
-        # return our model
-        return model
+    # return our model
+    return model
 
 def create_cnn(width, height, depth, filters=(16, 32, 64), regress=False):
     # initialize the input shape and channel dimension, assuming
@@ -39,30 +39,30 @@ def create_cnn(width, height, depth, filters=(16, 32, 64), regress=False):
         if i == 0:
             x = inputs
 
-            # CONV => RELU => BN => POOL
-            x = Conv2D(f, (3, 3), padding="same")(x)
-            x = Activation("relu")(x)
-            x = BatchNormalization(axis=chanDim)(x)
-            x = MaxPooling2D(pool_size=(2, 2))(x)
+        # CONV => RELU => BN => POOL
+        x = Conv2D(f, (3, 3), padding="same")(x)
+        x = Activation("relu")(x)
+        x = BatchNormalization(axis=chanDim)(x)
+        x = MaxPooling2D(pool_size=(2, 2))(x)
 
-            # flatten the volume, then FC => RELU => BN => DROPOUT
-            x = Flatten()(x)
-            x = Dense(16)(x)
-            x = Activation("relu")(x)
-            x = BatchNormalization(axis=chanDim)(x)
-            x = Dropout(0.5)(x)
+    # flatten the volume, then FC => RELU => BN => DROPOUT
+    x = Flatten()(x)
+    x = Dense(16)(x)
+    x = Activation("relu")(x)
+    x = BatchNormalization(axis=chanDim)(x)
+    x = Dropout(0.5)(x)
 
-            # apply another FC layer, this one to match the number of nodes
-            # coming out of the MLP
-            x = Dense(4)(x)
-            x = Activation("relu")(x)
+    # apply another FC layer, this one to match the number of nodes
+    # coming out of the MLP
+    x = Dense(4)(x)
+    x = Activation("relu")(x)
 
-            # check to see if the regression node should be added
-            if regress:
-                x = Dense(1, activation="linear")(x)
+    # check to see if the regression node should be added
+    if regress:
+        x = Dense(1, activation="linear")(x)
 
-                # construct the CNN
-                model = Model(inputs, x)
+    # construct the CNN
+    model = Model(inputs, x)
 
-                # return the CNN
-                return model
+    # return the CNN
+    return model

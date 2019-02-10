@@ -1,40 +1,88 @@
-import tensorflow as tf
-import numpy as np
+"""An implementation of the Intersection over Union (IoU) metric for Keras."""
+from keras import backend as K
 
 
-class MeanIoU(object):
-    def __init__(self, num_classes):
-        super().__init__()
-        self.num_classes = num_classes
+def iou(y_true, y_pred, label: int):
+    """
+    Return the Intersection over Union (IoU) for a given label.
+    Args:
+        y_true: the expected y values as a one-hot
+        y_pred: the predicted y values as a one-hot or softmax output
+        label: the label to return the IoU for
+    Returns:
+        the IoU for the given label
+    """
+    # extract the label values using the argmax operator then
+    # calculate equality of the predictions and truths to the label
+    y_true = K.cast(K.equal(K.argmax(y_true), label), K.floatx())
+    y_pred = K.cast(K.equal(K.argmax(y_pred), label), K.floatx())
+    # calculate the |intersection| (AND) of the labels
+    intersection = K.sum(y_true * y_pred)
+    # calculate the |union| (OR) of the labels
+    union = K.sum(y_true) + K.sum(y_pred) - intersection
+    # avoid divide by zero - if the union is zero, return 1
+    # otherwise, return the intersection over union
+    return K.switch(K.equal(union, 0), 1.0, intersection / union)
 
-    def mean_iou(self, y_true, y_pred):
-        # Wraps np_mean_iou method and uses it as a TensorFlow op.
-        # Takes numpy arrays as its arguments and returns numpy arrays as
-        # its outputs.
-        return tf.py_func(self.np_mean_iou, [y_true, y_pred], tf.float32)
 
-    def np_mean_iou(self, y_true, y_pred):
-        # Compute the confusion matrix to get the number of true positives,
-        # false positives, and false negatives
-        # Convert predictions and target from categorical to integer format
-        target = np.argmax(y_true, axis=-1).ravel()
-        predicted = np.argmax(y_pred, axis=-1).ravel()
+def build_iou_for(label: int, name: str=None):
+    """
+    Build an Intersection over Union (IoU) metric for a label.
+    Args:
+        label: the label to build the IoU metric for
+        name: an optional name for debugging the built method
+    Returns:
+        a keras metric to evaluate IoU for the given label
 
-        # Trick from torchnet for bincounting 2 arrays together
-        # https://github.com/pytorch/tnt/blob/master/torchnet/meter/confusionmeter.py
-        x = predicted + self.num_classes * target
-        bincount_2d = np.bincount(x.astype(np.int32), minlength=self.num_classes**2)
-        assert bincount_2d.size == self.num_classes**2
-        conf = bincount_2d.reshape((self.num_classes, self.num_classes))
+    Note:
+        label and name support list inputs for multiple labels
+    """
+    # handle recursive inputs (e.g. a list of labels and names)
+    if isinstance(label, list):
+        if isinstance(name, list):
+            return [build_iou_for(l, n) for (l, n) in zip(label, name)]
+        return [build_iou_for(l) for l in label]
 
-        # Compute the IoU and mean IoU from the confusion matrix
-        true_positive = np.diag(conf)
-        false_positive = np.sum(conf, 0) - true_positive
-        false_negative = np.sum(conf, 1) - true_positive
+    # build the method for returning the IoU of the given label
+    def label_iou(y_true, y_pred):
+        """
+        Return the Intersection over Union (IoU) score for {0}.
+        Args:
+            y_true: the expected y values as a one-hot
+            y_pred: the predicted y values as a one-hot or softmax output
+        Returns:
+            the scalar IoU value for the given label ({0})
+        """.format(label)
+        return iou(y_true, y_pred, label)
 
-        # Just in case we get a division by 0, ignore/hide the error and set the value to 0
-        with np.errstate(divide='ignore', invalid='ignore'):
-            iou = true_positive / (true_positive + false_positive + false_negative)
-            iou[np.isnan(iou)] = 0
+    # if no name is provided, us the label
+    if name is None:
+        name = label
+    # change the name of the method for debugging
+    label_iou.__name__ = 'iou_{}'.format(name)
 
-        return np.mean(iou).astype(np.float32)
+    return label_iou
+
+
+def mean_iou(y_true, y_pred):
+    """
+    Return the Intersection over Union (IoU) score.
+    Args:
+        y_true: the expected y values as a one-hot
+        y_pred: the predicted y values as a one-hot or softmax output
+    Returns:
+        the scalar IoU value (mean over all labels)
+    """
+    # get number of labels to calculate IoU for
+    num_labels = K.int_shape(y_pred)[-1]
+    # initialize a variable to store total IoU in
+    total_iou = K.variable(0)
+    # iterate over labels to calculate IoU for
+    for label in range(num_labels):
+        total_iou = total_iou + iou(y_true, y_pred, label)
+    # divide total IoU by number of labels to get mean IoU
+    return total_iou / num_labels
+
+
+# explicitly define the outward facing API of this module
+__all__ = [build_iou_for.__name__, mean_iou.__name__]

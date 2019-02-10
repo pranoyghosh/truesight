@@ -14,9 +14,9 @@ import os
 from keras.models import model_from_json
 
 
-num_classes = 1
+#num_classes = 1
 
-miou_metric = iou.MeanIoU(num_classes)
+#miou_metric = iou.MeanIoU(num_classes)
 # construct the argument parser and parse the arguments
 '''
 ap = argparse.ArgumentParser()
@@ -27,14 +27,14 @@ args = vars(ap.parse_args())
 # construct the path to the input .txt file that contains information
 # on each house in the dataset and then load the dataset
 print("[INFO] loading attributes...")
-inputPath = "/media/pranoy/New Volume1/truesight/data/training.csv"
+inputPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/training.csv"
 df = datasets.load_attributes(inputPath)
 
 # load the house images and then scale the pixel intensities to the
 # range [0, 1]
 print("[INFO] loading images...")
-img_data = "/media/pranoy/New Volume1/truesight/data/train"
-images = datasets.load_images(img_data)
+img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/training"
+images = datasets.load_images(inputPath, img_data)
 images = images / 255.0
 
 print(images.shape)
@@ -44,7 +44,7 @@ print(df.shape)
 print("[INFO] processing data...")
 split = train_test_split(df, images, test_size=0.25, random_state=42)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
-
+print(trainAttrX.shape)
 # find the largest house price in the training set and use it to
 # scale our house prices to the range [0, 1] (will lead to better
 # training and convergence)
@@ -68,16 +68,16 @@ testY4 = testAttrX["y2"] / maxY2
 #	trainAttrX, testAttrX)
 
 # create the MLP and CNN models
-mlp = models.create_mlp(trainAttrX.shape[1], regress=False)
+#mlp = models.create_mlp(trainAttrX.shape[1], regress=False)
 cnn = models.create_cnn(64, 64, 3, regress=False)
 
 # create the input to our final set of layers as the *output* of both
 # the MLP and CNN
-combinedInput = concatenate([mlp.output, cnn.output])
+#combinedInput = concatenate([mlp.output, cnn.output])
 
 # our final FC layer head will have two dense layers, the final one
 # being our regression head
-x = Dense(4, activation="relu")(combinedInput)
+x = Dense(4, activation="relu")(cnn.output)
 x1 = Dense(1, activation="linear")(x)
 x2 = Dense(1, activation="linear")(x)
 y1 = Dense(1, activation="linear")(x)
@@ -85,24 +85,24 @@ y2 = Dense(1, activation="linear")(x)
 # our final model will accept categorical/numerical data on the MLP
 # input and images on the CNN input, outputting a single value (the
 # predicted price of the house)
-model = Model(inputs=[mlp.input, cnn.input], outputs=[x1,x2,y1,y2])
+model = Model(inputs=cnn.input, outputs=[x1, x2, y1, y2])
 
 # compile the model using mean absolute percentage error as our loss,
 # implying that we seek to minimize the absolute percentage difference
 # between our price *predictions* and the *actual prices*
-#opt = Adam(lr=1e-3, decay=1e-3 / 200)
+opt = Adam(lr=1e-3, decay=1e-3 / 200)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
-model.compile(optimizer='adam', loss="mean_absolute_percentage_error", metrics=[miou_metric.mean_iou])
+model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
 # train the model
 print("[INFO] training model...")
 model.fit(
-[trainAttrX, trainImagesX], [trainY1,trainY2,trainY3,trainY4],
-validation_data=([testAttrX, testImagesX], [testY1,testY2,testY3,testY4]),
-epochs=200, batch_size=8)
+    trainImagesX, [trainY1,trainY2,trainY3,trainY4],
+    validation_data=(testImagesX, [testY1,testY2,testY3,testY4]),
+    epochs=100, batch_size=8)
 
 # evaluate the model
-scores = model.evaluate([trainAttrX, trainImagesX], [trainY1,trainY2,trainY3,trainY4], verbose=0)
+scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
 print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # serialize model to JSON
