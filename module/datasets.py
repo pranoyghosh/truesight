@@ -9,9 +9,9 @@ import os
 
 def load_attributes(inputPath):
     cols = ["x1", "x2", "y1", "y2"]
-	df = pd.read_csv(inputPath, header=None, names=cols)
+    df = pd.read_csv(inputPath, header=None, names=cols)
 	# return the data frame
-	return df
+    return df
 
 
 def load_images(inputPath):
