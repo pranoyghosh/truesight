@@ -3,9 +3,9 @@ import shutil
 import csv
 import sys
 
-csv_file = "/media/pranoy/New Volume1/truesight/test.csv"
-filepath = "/media/pranoy/New Volume1/True Sight/images"
-new_path_prefix = "/media/pranoy/New Volume1/truesight/test"
+csv_file = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test.csv"
+filepath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
+new_path_prefix = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test"
 
 with open(csv_file, 'r') as f:
     reader = csv.reader(f)
