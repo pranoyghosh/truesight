@@ -23,4 +23,4 @@ def load_images(inputPath):
         c=cv2.resize(img, (64,64))
         images.append(c)
         # return our set of images
-        return np.array(images)
+    return np.array(images)

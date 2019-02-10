@@ -38,6 +38,8 @@ img_data = "/media/pranoy/New Volume1/truesight/data/train"
 images = datasets.load_images(img_data)
 images = images / 255.0
 
+print(images.shape)
+print(df.shape)
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
 print("[INFO] processing data...")
