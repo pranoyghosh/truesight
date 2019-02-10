@@ -1,6 +1,3 @@
-# USAGE
-# python mixed_training.py --dataset Houses-dataset/Houses\ Dataset/
-
 # import the necessary packages
 from module import datasets
 from module import models
@@ -14,6 +11,8 @@ import numpy as np
 #import argparse
 import locale
 import os
+from keras.models import model_from_json
+
 
 num_classes = 1
 
@@ -27,13 +26,13 @@ args = vars(ap.parse_args())
 '''
 # construct the path to the input .txt file that contains information
 # on each house in the dataset and then load the dataset
-print("[INFO] loading house attributes...")
+print("[INFO] loading attributes...")
 inputPath = "/media/pranoy/New Volume1/truesight/data/training.csv"
 df = datasets.load_attributes(inputPath)
 
 # load the house images and then scale the pixel intensities to the
 # range [0, 1]
-print("[INFO] loading house images...")
+print("[INFO] loading images...")
 img_data = "/media/pranoy/New Volume1/truesight/data/train"
 images = datasets.load_images(img_data)
 images = images / 255.0
@@ -102,26 +101,14 @@ model.fit(
 validation_data=([testAttrX, testImagesX], [testY1,testY2,testY3,testY4]),
 epochs=200, batch_size=8)
 
-# make predictions on the testing data
-print("[INFO] predicting house prices...")
-preds = model.predict([testAttrX, testImagesX])
-'''
-# compute the difference between the *predicted* house prices and the
-# *actual* house prices, then compute the percentage difference and
-# the absolute percentage difference
-diff = preds.flatten() - testY
-percentDiff = (diff / testY) * 100
-absPercentDiff = np.abs(percentDiff)
+# evaluate the model
+scores = model.evaluate([trainAttrX, trainImagesX], [trainY1,trainY2,trainY3,trainY4], verbose=0)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
-# compute the mean and standard deviation of the absolute percentage
-# difference
-mean = np.mean(absPercentDiff)
-std = np.std(absPercentDiff)
-
-# finally, show some statistics on our model
-locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
-print("[INFO] avg. house price: {}, std house price: {}".format(
-locale.currency(df["price"].mean(), grouping=True),
-locale.currency(df["price"].std(), grouping=True)))
-print("[INFO] mean: {:.2f}%, std: {:.2f}%".format(mean, std))
-'''
+# serialize model to JSON
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights("model.h5")
+print("Saved model to disk")
