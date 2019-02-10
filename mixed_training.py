@@ -34,7 +34,7 @@ df = datasets.load_attributes(inputPath)
 # load the house images and then scale the pixel intensities to the
 # range [0, 1]
 print("[INFO] loading house images...")
-img_data = "/media/pranoy/New Volume1/truesight/train"
+img_data = "/media/pranoy/New Volume1/truesight/data/train"
 images = datasets.load_images(img_data)
 images = images / 255.0
 
