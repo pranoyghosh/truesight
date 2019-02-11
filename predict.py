@@ -1,25 +1,20 @@
 # import the necessary packages
 from module import datasets
 from module import models
-from module import iou
-from sklearn.model_selection import train_test_split
-from keras.layers.core import Dense
 from keras.models import Model
-from keras.optimizers import Adam
-from keras.layers import concatenate
 import numpy as np
 import pandas as pd
-import locale
 import os
 from keras.models import model_from_json
 
 print("[INFO] loading attributes...")
 trainPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/training.csv"
 inputPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test.csv"
-cols =["image_name"]
+cols =["image_name","x1","x2","y1","y2"]
 df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
+df = df.drop(df.columns[[1, 2, 3, 4]], axis=1)
 df2 = datasets.load_attributes(trainPath)
-# load the house images and then scale the pixel intensities to the
+# load the images and then scale the pixel intensities to the
 # range [0, 1]
 print("[INFO] loading images...")
 img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test"
@@ -58,9 +53,9 @@ maxY1 = df2["y1"].max()
 testY3 = testY3 * maxY1
 maxY2 = df2["y2"].max()
 testY4 = testY4 * maxY2
-imgcol=df["image_name"]
+
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
-dfx = pd.DataFrame({'image_name' : imgcol, 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
-dfx.to_csv("res/test.csv")
+dfx = pd.DataFrame({'image_name' : df["image_name"], 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
+dfx.to_csv("res/test99.csv")
 
 print('Predictions saved')
