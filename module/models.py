@@ -53,7 +53,7 @@ def create_cnn(width, height, depth, filters=(16, 32, 64, 128, 256), regress=Fal
     x = Dropout(0.5)(x)
 
     x = Dense(4)(x)
-	x = Activation("relu")(x)
+    x = Activation("relu")(x)
 
 
 
