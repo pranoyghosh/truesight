@@ -24,12 +24,12 @@ images = images / 255.0
 
 testImagesX = images
 # load json and create model
-json_file = open('models/model4.json', 'r')
+json_file = open('models/model5.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/model4.h5")
+loaded_model.load_weights("models/model5.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data

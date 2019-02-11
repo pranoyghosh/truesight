@@ -29,7 +29,7 @@ print(df.shape)
 # partition the data into training and testing splits using 95% of
 # the data for training and the remaining 5% for validation
 print("[INFO] processing data...")
-split = train_test_split(df, images, test_size=0.05, random_state=37)
+split = train_test_split(df, images, test_size=0.05, random_state=36)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
 print(trainAttrX.shape)
 # find the largest  bounding box coordinate for each x1 x2 y1 y2 in the training set and use it to
@@ -79,8 +79,8 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("models/model4.json", "w") as json_file:
+with open("models/model5.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("models/model4.h5")
+model.save_weights("models/model5.h5")
 print("Saved model to disk")
