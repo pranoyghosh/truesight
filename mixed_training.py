@@ -42,7 +42,7 @@ print(df.shape)
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
 print("[INFO] processing data...")
-split = train_test_split(df, images, test_size=0.20, random_state=40)
+split = train_test_split(df, images, test_size=0.20, random_state=41)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
 print(trainAttrX.shape)
 # find the largest house price in the training set and use it to
@@ -90,7 +90,7 @@ model = Model(inputs=cnn.input, outputs=[x1, x2, y1, y2])
 # compile the model using mean absolute percentage error as our loss,
 # implying that we seek to minimize the absolute percentage difference
 # between our price *predictions* and the *actual prices*
-opt = Adam(lr=1e-3, decay=1e-3 / 90)
+opt = Adam(lr=1e-3, decay=1e-3 / 50)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
@@ -99,7 +99,7 @@ print("[INFO] training model...")
 model.fit(
     trainImagesX, [trainY1,trainY2,trainY3,trainY4],
     validation_data=(testImagesX, [testY1,testY2,testY3,testY4]),
-    epochs=90, batch_size=8)
+    epochs=50, batch_size=8)
 
 # evaluate the model
 scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
