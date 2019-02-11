@@ -30,12 +30,12 @@ images = images / 255.0
 #testAttrX = df
 testImagesX = images
 # load json and create model
-json_file = open('models/model1.json', 'r')
+json_file = open('models/model4.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/model1.h5")
+loaded_model.load_weights("models/model4.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data
@@ -59,9 +59,9 @@ maxY1 = df2["y1"].max()
 testY3 = testY3 * maxY1
 maxY2 = df2["y2"].max()
 testY4 = testY4 * maxY2
-
+imgcol=df["image_name"]
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
-dfx = pd.DataFrame({"image_name" : df["image_name"], "x1" : testY1, "x2" : testY2, "y1" : testY3, "y2" : testY4})
-dfx.to_csv("res/test1.csv")
+dfx = pd.DataFrame({'image_name' : imgcol, 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
+dfx.to_csv("res/test.csv")
 
 print('Predictions saved')

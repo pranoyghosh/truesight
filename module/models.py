@@ -54,8 +54,8 @@ def create_cnn(width, height, depth, filters=(16, 32, 64, 128), regress=False):
 
     # apply another FC layer, this one to match the number of nodes
     # coming out of the MLP
-    x = Dense(4)(x)
-    x = Activation("relu")(x)
+    #x = Dense(4)(x)
+    #x = Activation("relu")(x)
 
     # check to see if the regression node should be added
     if regress:
