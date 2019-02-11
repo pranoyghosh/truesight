@@ -69,7 +69,7 @@ testY4 = testAttrX["y2"] / maxY2
 
 # create the MLP and CNN models
 #mlp = models.create_mlp(trainAttrX.shape[1], regress=False)
-cnn = models.create_cnn(224, 224, 3, regress=False)
+cnn = models.create_cnn(128, 128, 3, regress=False)
 
 # create the input to our final set of layers as the *output* of both
 # the MLP and CNN

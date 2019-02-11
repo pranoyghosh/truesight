@@ -22,7 +22,8 @@ def load_images(inpdf, inputPath):
     # loop over the indexes of the houses
     for filename,p,n,e in df.index.values:
         img = cv2.imread(os.path.join(inputPath,filename))
-        c=cv2.resize(img, (224,224))
+        c=cv2.resize(img, (128,128))
+        #c=c/255
         images.append(c)
         # return our set of images
     return np.array(images)
