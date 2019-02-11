@@ -42,7 +42,7 @@ print(df.shape)
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
 print("[INFO] processing data...")
-split = train_test_split(df, images, test_size=0.20, random_state=42)
+split = train_test_split(df, images, test_size=0.20, random_state=40)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
 print(trainAttrX.shape)
 # find the largest house price in the training set and use it to
