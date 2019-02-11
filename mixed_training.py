@@ -8,8 +8,6 @@ from keras.models import Model
 from keras.optimizers import Adam
 from keras.layers import concatenate
 import numpy as np
-import locale
-import os
 from keras.models import model_from_json
 
 
@@ -29,7 +27,7 @@ print(df.shape)
 # partition the data into training and testing splits using 95% of
 # the data for training and the remaining 5% for validation
 print("[INFO] processing data...")
-split = train_test_split(df, images, test_size=0.05, random_state=36)
+split = train_test_split(df, images, test_size=0.10, random_state=33)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
 print(trainAttrX.shape)
 # find the largest  bounding box coordinate for each x1 x2 y1 y2 in the training set and use it to
@@ -62,7 +60,7 @@ y2 = Dense(1, activation="linear")(x)
 model = Model(inputs=cnn.input, outputs=[x1, x2, y1, y2])
 
 
-opt = Adam(lr=1e-3, decay=1e-3 / 70)
+opt = Adam(lr=1e-3, decay=1e-3 / 60)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
@@ -71,7 +69,7 @@ print("[INFO] training model...")
 model.fit(
     trainImagesX, [trainY1,trainY2,trainY3,trainY4],
     validation_data=(testImagesX, [testY1,testY2,testY3,testY4]),
-    epochs=70, batch_size=6)
+    epochs=60, batch_size=6)
 
 # evaluate the model
 scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
@@ -79,8 +77,8 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("models/model5.json", "w") as json_file:
+with open("models/model2.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("models/model5.h5")
+model.save_weights("models/model2.h5")
 print("Saved model to disk")
