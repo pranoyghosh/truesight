@@ -9,7 +9,6 @@ from keras.optimizers import Adam
 from keras.layers import concatenate
 import numpy as np
 import pandas as pd
-#import argparse
 import locale
 import os
 from keras.models import model_from_json
@@ -27,7 +26,7 @@ img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test"
 images = datasets.load_images(inputPath, img_data)
 images = images / 255.0
 
-#testAttrX = df
+
 testImagesX = images
 # load json and create model
 json_file = open('models/model4.json', 'r')
