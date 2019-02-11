@@ -42,7 +42,7 @@ print(df.shape)
 # partition the data into training and testing splits using 75% of
 # the data for training and the remaining 25% for testing
 print("[INFO] processing data...")
-split = train_test_split(df, images, test_size=0.25, random_state=42)
+split = train_test_split(df, images, test_size=0.20, random_state=42)
 (trainAttrX, testAttrX, trainImagesX, testImagesX) = split
 print(trainAttrX.shape)
 # find the largest house price in the training set and use it to
@@ -69,7 +69,7 @@ testY4 = testAttrX["y2"] / maxY2
 
 # create the MLP and CNN models
 #mlp = models.create_mlp(trainAttrX.shape[1], regress=False)
-cnn = models.create_cnn(64, 64, 3, regress=False)
+cnn = models.create_cnn(224, 224, 3, regress=False)
 
 # create the input to our final set of layers as the *output* of both
 # the MLP and CNN
@@ -90,7 +90,7 @@ model = Model(inputs=cnn.input, outputs=[x1, x2, y1, y2])
 # compile the model using mean absolute percentage error as our loss,
 # implying that we seek to minimize the absolute percentage difference
 # between our price *predictions* and the *actual prices*
-opt = Adam(lr=1e-3, decay=1e-3 / 200)
+opt = Adam(lr=1e-3, decay=1e-3 / 90)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
@@ -99,7 +99,7 @@ print("[INFO] training model...")
 model.fit(
     trainImagesX, [trainY1,trainY2,trainY3,trainY4],
     validation_data=(testImagesX, [testY1,testY2,testY3,testY4]),
-    epochs=100, batch_size=8)
+    epochs=90, batch_size=8)
 
 # evaluate the model
 scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
@@ -107,8 +107,8 @@ print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("model.json", "w") as json_file:
+with open("models/model1.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("model.h5")
+model.save_weights("models/model1.h5")
 print("Saved model to disk")
