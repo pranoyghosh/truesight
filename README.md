@@ -5,6 +5,7 @@ Contains a simple object detection model which predicts bounding boxes for image
 
 # Problem Statement:
 • The 2019 GRiD challenge for students is to leverage a predefined data-set from Flipkart to enable ‘Vertical Classification’ using images.
+
 • A dataset was provided which has images and a metadata file containing name of image and bounding box coordinates around the object of image.
 
 # Libraries used:
