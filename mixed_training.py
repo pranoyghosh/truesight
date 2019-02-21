@@ -12,15 +12,16 @@ from keras.models import model_from_json
 
 
 print("[INFO] loading attributes...")
-inputPath = "/home/harshit1201/Desktop/Project:TrueSight/training_set.csv"
-cols =["image_name"]
 files=[]
-df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
-for filename,p,n,e in df.index.values:
-    files.append(os.path.join(inputPath,filename))
+inputPath = "/home/harshit1201/Desktop/Project:TrueSight/training_set.csv"
+img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
+cols =["image_name"]
+fdf = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
+for filename,p,n,e in fdf.index.values:
+    files.append(os.path.join(img_data,filename))
 colsdf = ["image_name","x1", "x2", "y1", "y2"]
 df = pd.read_csv(inputPath, skiprows=[0], header=None, names=colsdf)
-img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
+
 #images = datasets.load_images(inputPath, img_data)
 #images = images / 255.0
 
@@ -29,25 +30,6 @@ img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
 # partition the data into training and testing splits using 95% of
 # the data for training and the remaining 5% for validation
 print("[INFO] processing data...")
-#split = train_test_split(df, images, test_size=0.10, random_state=33)
-#(trainAttrX, testAttrX, trainImagesX, testImagesX) = split
-#print(trainAttrX.shape)
-# find the largest  bounding box coordinate for each x1 x2 y1 y2 in the training set and use it to
-# scale our bounding box coordinates to the range [0, 1] (will lead to better
-# training and convergence)
-'''
-maxX1 = df["x1"].max()
-trainY1 = df["x1"] / maxX1
-#testY1 = testAttrX["x1"] / maxX1
-maxX2 = df["x2"].max()
-trainY2 = df["x2"] / maxX2
-#testY2 = testAttrX["x2"] / maxX2
-maxY1 = df["y1"].max()
-trainY3 = df["y1"] / maxY1
-#testY3 = testAttrX["y1"] / maxY1
-maxY2 = df["y2"].max()
-trainY4 = df["y2"] / maxY2'''
-#testY4 = testAttrX["y2"] / maxY2
 
 cnn = models.create_cnn(128, 128, 3, regress=False)
 
@@ -63,16 +45,16 @@ combinedOutput = concatenate([x1,x2,y1,y2])
 
 model = Model(inputs=cnn.input, outputs=combinedOutput)
 
-
+genCustom = datasets.custom_genimg(files,df,6)
 opt = Adam(lr=1e-3, decay=1e-3 / 60)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
 # train the model
 print("[INFO] training model...")
-model.fit(
-    np.array(datasets.load_images(inputPath, img_data),ndmin=4), np.array(datasets.load_attributes(inputPath)),
-    epochs=60, batch_size=None, steps_per_epoch=3)
+model.fit_generator(
+    genCustom,
+    epochs=60, steps_per_epoch=4000)
 
 # evaluate the model
 #scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
