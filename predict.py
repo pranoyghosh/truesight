@@ -22,21 +22,6 @@ for filename,p,n,e in df.index.values:
 # load the images and then scale the pixel intensities to the
 # range [0, 1]
 
-def custom_gentest(files,df,bsize=6):
-    n=0
-    while True:
-        batch_paths=files[n:n+bsize]
-        batch_input=[]
-        for input_path in batch_paths:
-            input=load_images(input_path)
-            fname=os.path.basename(input_path)
-            input=preprocess_img(input)
-            batch_input+=[input]
-        batch_x=np.array(batch_input)
-        #batch_y=batch_y.flatten()
-        yield (batch_x)
-        n+=bsize
-
 genTCustom = datasets.custom_gentest(files,df,5)
 # load json and create model
 json_file = open('models/modelR3_1.json', 'r')
