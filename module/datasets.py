@@ -80,6 +80,7 @@ def custom_gentest(files,df,bsize=6):
             input=preprocess_img(input)
             batch_input+=[input]
         batch_x=np.array(batch_input)
+        print(n)
         #batch_y=batch_y.flatten()
         yield (batch_x)
         n+=bsize
