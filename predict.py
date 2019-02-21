@@ -8,33 +8,48 @@ import os
 from keras.models import model_from_json
 
 print("[INFO] loading attributes...")
-trainPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/training.csv"
-inputPath = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test.csv"
+trainPath = "/home/harshit1201/Desktop/Project:TrueSight/training_set.csv"
+inputPath = "/home/harshit1201/Desktop/Project:TrueSight/test.csv"
+img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
+col1=["image_name"]
+files=[]
+df = pd.read_csv(inputPath, skiprows=[0], header=None, names=col1)
+#df3 = df.drop(df.columns[[1, 2, 3, 4]], axis=1)
 cols =["image_name","x1","x2","y1","y2"]
-df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
-df = df.drop(df.columns[[1, 2, 3, 4]], axis=1)
-df2 = datasets.load_attributes(trainPath)
+df2 = pd.read_csv(trainPath, skiprows=[0], header=None, names=cols)
+for filename,p,n,e in df.index.values:
+    files.append(os.path.join(img_data,filename))
 # load the images and then scale the pixel intensities to the
 # range [0, 1]
-print("[INFO] loading images...")
-img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/test"
-images = datasets.load_images(inputPath, img_data)
-images = images / 255.0
 
+def custom_gentest(files,df,bsize=6):
+    n=0
+    while True:
+        batch_paths=files[n:n+bsize]
+        batch_input=[]
+        for input_path in batch_paths:
+            input=load_images(input_path)
+            fname=os.path.basename(input_path)
+            input=preprocess_img(input)
+            batch_input+=[input]
+        batch_x=np.array(batch_input)
+        #batch_y=batch_y.flatten()
+        yield (batch_x)
+        n+=bsize
 
-testImagesX = images
+genTCustom = datasets.custom_gentest(files,df,5)
 # load json and create model
-json_file = open('models/model2.json', 'r')
+json_file = open('models/modelR3_1.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/model2.h5")
+loaded_model.load_weights("models/modelR3_1.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data
 print("[INFO] predicting bounding boxes...")
-preds = loaded_model.predict(testImagesX)
+preds = loaded_model.predict_generator(genTCustom,steps=4809)
 testY1 = preds[0]
 testY2 = preds[1]
 testY3 = preds[2]
@@ -56,6 +71,6 @@ testY4 = testY4 * maxY2
 
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
 dfx = pd.DataFrame({'image_name' : df["image_name"], 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
-dfx.to_csv("res/test.csv", index=False)
+dfx.to_csv("res/testR3_1.csv", index=False)
 
 print('Predictions saved')
