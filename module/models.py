@@ -23,7 +23,7 @@ def create_mlp(dim, regress=False):
     # return our model
     return model
 
-def create_cnn(width, height, depth, filters=(16, 32, 64, 128), regress=False):
+def create_cnn(width, height, depth, filters=(16, 32, 64, 128, 256), regress=False):
     # initialize the input shape and channel dimension, assuming
     # TensorFlow/channels-last ordering
     inputShape = (height, width, depth)

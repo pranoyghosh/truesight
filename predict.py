@@ -24,12 +24,12 @@ for filename,p,n,e in df.index.values:
 df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
 genTCustom = datasets.custom_gentest(files,df,5)
 # load json and create model
-json_file = open('models/modelR3_1.json', 'r')
+json_file = open('models/modelR3_2.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/modelR3_1.h5")
+loaded_model.load_weights("models/modelR3_2.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data

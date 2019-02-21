@@ -38,7 +38,7 @@ df = pd.read_csv(inputPath, skiprows=[0], header=None, names=colsdf)
 # the data for training and the remaining 5% for validation
 print("[INFO] processing data...")
 
-cnn = models.create_cnn(128, 128, 3, regress=False)
+cnn = models.create_cnn(224, 224, 3, regress=False)
 
 
 # our final FC layer head will have two dense layers, the final one
@@ -61,7 +61,7 @@ y2 = Dense(1, activation="linear", name='op4')(x)
 model = Model(inputs=cnn.input, outputs=[x1,x2,y1,y2])
 
 genCustom = datasets.custom_genimg(files,df,6)
-opt = Adam(lr=1e-3, decay=1e-3 / 60)
+opt = Adam(lr=1e-3, decay=1e-3 / 55)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
@@ -69,7 +69,7 @@ model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 print("[INFO] training model...")
 model.fit_generator(
     genCustom,
-    epochs=60, steps_per_epoch=4000)
+    epochs=55, steps_per_epoch=4000)
 
 # evaluate the model
 #scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)
@@ -77,8 +77,8 @@ model.fit_generator(
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("models/modelR3_1.json", "w") as json_file:
+with open("models/modelR3_2.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("models/modelR3_1.h5")
+model.save_weights("models/modelR3_2.h5")
 print("Saved model to disk")
