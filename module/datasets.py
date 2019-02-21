@@ -17,7 +17,7 @@ def load_attributes(df,fname):
 
 def load_images(inputPath):
     img = cv2.imread(inputPath)
-    c=cv2.resize(img, (224,224))
+    c=cv2.resize(img, (256,256))
     return c
 
 def preprocess_att(df,inp,i):
@@ -36,12 +36,14 @@ def preprocess_att(df,inp,i):
     return inp[i]
 
 def preprocess_img(inpimg):
-    img=inpimg/255
+    img=inpimg/255.0
     return img
 
 def custom_genimg(files,df,bsize=6):
     n=0
     while True:
+        if n>=24000:
+            n=0
         batch_paths=files[n:n+bsize]
         #batch_paths=np.random.choice(a=files,size=bsize)
         batch_input=[]
@@ -72,7 +74,7 @@ def custom_genimg(files,df,bsize=6):
         yield (batch_x, {'op1':batch_tx1, 'op2':batch_tx2, 'op3':batch_ty1, 'op4':batch_ty2})
         n+=bsize
 
-def custom_gentest(files,df,bsize=6):
+def custom_gentest(files,bsize=6):
     n=0
     while True:
         batch_paths=files[n:n+bsize]

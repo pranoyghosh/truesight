@@ -22,19 +22,19 @@ for filename,p,n,e in df.index.values:
 # load the images and then scale the pixel intensities to the
 # range [0, 1]
 df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
-genTCustom = datasets.custom_gentest(files,df,5)
+genTCustom = datasets.custom_gentest(files,35)
 # load json and create model
-json_file = open('models/modelR3_2.json', 'r')
+json_file = open('models/modelR3_3.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/modelR3_2.h5")
+loaded_model.load_weights("models/modelR3_3.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data
 print("[INFO] predicting bounding boxes...")
-preds = loaded_model.predict_generator(genTCustom,steps=4809)
+preds = loaded_model.predict_generator(genTCustom,steps=687)
 testY1 = preds[0]
 testY2 = preds[1]
 testY3 = preds[2]
@@ -56,6 +56,6 @@ testY4 = testY4 * maxY2
 
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
 dfx = pd.DataFrame({'image_name' : df["image_name"], 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
-dfx.to_csv("res/testR3_2.csv", index=False)
+dfx.to_csv("res/testR3_3.csv", index=False)
 
 print('Predictions saved')
