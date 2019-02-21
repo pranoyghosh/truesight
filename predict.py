@@ -21,7 +21,7 @@ for filename,p,n,e in df.index.values:
     files.append(os.path.join(img_data,filename))
 # load the images and then scale the pixel intensities to the
 # range [0, 1]
-
+df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
 genTCustom = datasets.custom_gentest(files,df,5)
 # load json and create model
 json_file = open('models/modelR3_1.json', 'r')
