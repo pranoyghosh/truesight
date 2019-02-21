@@ -61,7 +61,7 @@ y2 = Dense(1, activation="linear", name='op4')(x)
 model = Model(inputs=cnn.input, outputs=[x1,x2,y1,y2])
 
 genCustom = datasets.custom_genimg(files,df,6)
-opt = Adam(lr=1e-3, decay=1e-3 / 55)
+opt = Adam(lr=1e-3, decay=1e-3 / 40)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 
@@ -69,7 +69,7 @@ model.compile(optimizer=opt, loss='mean_squared_error', metrics=[iou.mean_iou])
 print("[INFO] training model...")
 model.fit_generator(
     genCustom,
-    epochs=55, steps_per_epoch=4000)
+    epochs=40, steps_per_epoch=4000)
 
 # evaluate the model
 #scores = model.evaluate(trainImagesX, [trainY1,trainY2,trainY3,trainY4], verbose=0)

@@ -56,6 +56,6 @@ testY4 = testY4 * maxY2
 
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
 dfx = pd.DataFrame({'image_name' : df["image_name"], 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
-dfx.to_csv("res/testR3_1.csv", index=False)
+dfx.to_csv("res/testR3_2.csv", index=False)
 
 print('Predictions saved')
