@@ -50,7 +50,7 @@ genCustom = datasets.custom_genimg(files,df,32)
 #opt = Adam(lr=1e-3, decay=1e-3 / 40)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
 sgd = optimizers.SGD(lr=0.01, decay=0.01/30, momentum=0.9, nesterov=True)
-model.compile(optimizer=sgd, loss='mean_squared_error', metrics={'op1':'accuracy', 'op2':'accuracy', 'op3':'accuracy','op4':'accuracy'})
+model.compile(optimizer=sgd, loss='mean_squared_error', metrics=[iou.bb_iou])
 
 # train the model
 print("[INFO] training model...")

@@ -1,5 +1,47 @@
 """An implementation of the Intersection over Union (IoU) metric for Keras."""
 from keras import backend as K
+import pandas as pd
+
+def bb_iou(y_true, y_pred):
+    trainPath = "/home/harshit1201/Desktop/Project:TrueSight/training_set.csv"
+    cols =["image_name","x1","x2","y1","y2"]
+    df2 = pd.read_csv(trainPath, skiprows=[0], header=None, names=cols)
+    maxX1 = df2["x1"].max()
+    maxX2 = df2["x2"].max()
+    maxY1 = df2["y1"].max()
+    maxY2 = df2["y2"].max()
+    y_pred[0] = y_pred[0].flatten()
+    y_pred[1] = y_pred[1].flatten()
+    y_pred[2] = y_pred[2].flatten()
+    y_pred[3] = y_pred[3].flatten()
+    y_true[0]=y_true[0]*maxX1
+    y_true[1]=y_true[1]*maxX2
+    y_true[2]=y_true[2]*maxY1
+    y_true[3]=y_true[3]*maxY2
+    y_pred[0]=y_pred[0]*maxX1
+    y_pred[1]=y_pred[1]*maxX2
+    y_pred[2]=y_pred[2]*maxY1
+    y_pred[3]=y_pred[3]*maxY2
+
+    xA = max(y_true[0], y_pred[0])
+    yA = max(y_true[1], y_pred[1])
+    xB = min(y_true[2], y_pred[2])
+    yB = min(y_true[3], y_pred[3])
+    # compute the area of intersection rectangle
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+
+    # compute the area of both the prediction and ground-truth
+    # rectangles
+    y_trueArea = (y_true[2] - y_true[0] + 1) * (y_true[3] - y_true[1] + 1)
+    y_predArea = (y_pred[2] - y_pred[0] + 1) * (y_pred[3] - y_pred[1] + 1)
+
+    # compute the intersection over union by taking the intersection
+    # area and dividing it by the sum of prediction + ground-truth
+    # areas - the interesection area
+    iou = interArea / float(y_trueArea + y_predArea - interArea)
+
+    # return the intersection over union value
+    return iou
 
 
 def iou(y_true, y_pred, label: int):
@@ -82,7 +124,3 @@ def mean_iou(y_true, y_pred):
         total_iou = total_iou + iou(y_true, y_pred, label)
     # divide total IoU by number of labels to get mean IoU
     return total_iou / num_labels
-
-
-# explicitly define the outward facing API of this module
-__all__ = [build_iou_for.__name__, mean_iou.__name__]
