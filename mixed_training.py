@@ -28,12 +28,12 @@ df = pd.read_csv(inputPath, skiprows=[0], header=None, names=colsdf)
 
 print("[INFO] processing data...")
 
-cnn = models.create_cnn(128, 128, 3, regress=False)
-
+#cnn = models.create_cnn(128, 128, 3, regress=False)
+cnn = models.create_cnnS(96, 96, 3, regress=False)
 
 # our final FC layer head will have two dense layers, the final one
 # being our regression head
-x = Dense(3, activation="relu")(cnn.output)
+x = Dense(4, activation="relu")(cnn.output)
 
 x1 = Dense(1, activation="linear", name='op1')(x)
 
@@ -46,17 +46,17 @@ y2 = Dense(1, activation="linear", name='op4')(x)
 
 model = Model(inputs=cnn.input, outputs=[x1,x2,y1,y2])
 
-genCustom = datasets.custom_genimg(files,df,64)
-#opt = Adam(lr=1e-3, decay=1e-3 / 40)
+genCustom = datasets.custom_genimg(files,df,32)
+opt = Adam(lr=1e-3, decay=1e-3 / 50)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
-sgd = optimizers.SGD(lr=0.01, decay=0.01/35, momentum=0.8, nesterov=True)
-model.compile(optimizer=sgd, loss='mean_squared_error', metrics={'op1':'accuracy', 'op2':'accuracy', 'op3':'accuracy','op4':'accuracy'})
+#sgd = optimizers.SGD(lr=0.01, decay=0.01/35, momentum=0.8, nesterov=True)
+model.compile(optimizer=opt, loss='mean_squared_error', metrics={'op1':'accuracy', 'op2':'accuracy', 'op3':'accuracy','op4':'accuracy'})
 
 # train the model
 print("[INFO] training model...")
 model.fit_generator(
     genCustom,
-    epochs=35, steps_per_epoch=375)
+    epochs=50, steps_per_epoch=750)
 
 # evaluate the model
 #scores = model.evaluate_generator(genCustom, steps=750, verbose=0)
@@ -64,8 +64,8 @@ model.fit_generator(
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("models/modelR3_6.json", "w") as json_file:
+with open("models/modelR3_7.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("models/modelR3_6.h5")
+model.save_weights("models/modelR3_7.h5")
 print("Saved model to disk")

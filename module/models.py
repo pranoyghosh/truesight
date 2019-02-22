@@ -10,12 +10,46 @@ from keras.layers import Flatten
 from keras.layers import Input
 from keras.models import Model
 
-def create_mlp(dim, regress=False):
-    # define our MLP network
+def create_cnnS(width, height, depth, regress=False):
+    # initialize the input shape and channel dimension, assuming
+    # TensorFlow/channels-last ordering
+    inputShape = (height, width, depth)
+    chanDim = -1
     model = Sequential()
-    model.add(Dense(8, input_dim=dim, activation="relu"))
-    model.add(Dense(4, activation="relu"))
+    # CONV => RELU => POOL
+    model.add(Conv2D(32, (3, 3), padding="same", input_shape=inputShape))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization(axis=chanDim))
+    model.add(MaxPooling2D(pool_size=(3, 3)))
+    model.add(Dropout(0.25))
 
+    # (CONV => RELU) * 2 => POOL
+    model.add(Conv2D(64, (3, 3), padding="same"))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization(axis=chanDim))
+    model.add(Conv2D(64, (3, 3), padding="same"))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization(axis=chanDim))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+    # (CONV => RELU) * 2 => POOL
+    model.add(Conv2D(128, (3, 3), padding="same"))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization(axis=chanDim))
+    model.add(Conv2D(128, (3, 3), padding="same"))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization(axis=chanDim))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(Dense(1024))
+    model.add(Activation("relu"))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.5))
+
+    model.add(Dense(4))
+    model.add(Activation("relu"))
     # check to see if the regression node should be added
     if regress:
         model.add(Dense(1, activation="linear"))
@@ -50,9 +84,9 @@ def create_cnn(width, height, depth, filters=(16, 32, 64, 128), regress=False):
     x = Dense(16)(x)
     x = Activation("relu")(x)
     x = BatchNormalization(axis=chanDim)(x)
-    x = Dropout(0.625)(x)
+    x = Dropout(0.5)(x)
 
-    x = Dense(3)(x)
+    x = Dense(4)(x)
     x = Activation("relu")(x)
 
 
