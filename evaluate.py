@@ -9,8 +9,8 @@ from keras.models import model_from_json
 def bb_iou(boxA, boxB):
 	# determine the (x, y)-coordinates of the intersection rectangle
 	xA = max(boxA[0], boxB[0])
-	yA = max(boxA[1], boxB[1])
-	xB = min(boxA[2], boxB[2])
+	yA = max(boxA[2], boxB[2])
+	xB = min(boxA[1], boxB[1])
 	yB = min(boxA[3], boxB[3])
 
 	# compute the area of intersection rectangle
