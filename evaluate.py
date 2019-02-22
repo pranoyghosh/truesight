@@ -44,7 +44,7 @@ for filename,p,n,e in df.index.values:
     files.append(os.path.join(img_data,filename))
 # load the images and then scale the pixel intensities to the
 # range [0, 1]
-genTCustom = datasets.custom_gentest(files,64)
+genSCustom = datasets.custom_gentest(files,64)
 # load json and create model
 json_file = open('models/modelR3_7.json', 'r')
 loaded_model_json = json_file.read()
@@ -56,7 +56,7 @@ print("Loaded model from disk")
 
 # make predictions on the testing data
 print("[INFO] predicting bounding boxes...")
-preds = loaded_model.predict_generator(genTCustom,steps=375)
+preds = loaded_model.predict_generator(genSCustom,steps=375)
 testY1 = preds[0]
 testY2 = preds[1]
 testY3 = preds[2]
