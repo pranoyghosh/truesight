@@ -18,8 +18,8 @@ def bb_iou(boxA, boxB):
 
 	# compute the area of both the prediction and ground-truth
 	# rectangles
-	boxAArea = (boxA[2] - boxA[0] + 1) * (boxA[3] - boxA[1] + 1)
-	boxBArea = (boxB[2] - boxB[0] + 1) * (boxB[3] - boxB[1] + 1)
+	boxAArea = (boxA[1] - boxA[0] + 1) * (boxA[3] - boxA[2] + 1)
+	boxBArea = (boxB[1] - boxB[0] + 1) * (boxB[3] - boxB[2] + 1)
 
 	# compute the intersection over union by taking the intersection
 	# area and dividing it by the sum of prediction + ground-truth
