@@ -17,7 +17,7 @@ def load_attributes(df,fname):
 
 def load_images(inputPath):
     img = cv2.imread(inputPath)
-    c=cv2.resize(img, (256,256))
+    c=cv2.resize(img, (128,128))
     return c
 
 def preprocess_att(df,inp,i):

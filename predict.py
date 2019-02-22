@@ -24,12 +24,12 @@ for filename,p,n,e in df.index.values:
 df = pd.read_csv(inputPath, skiprows=[0], header=None, names=cols)
 genTCustom = datasets.custom_gentest(files,35)
 # load json and create model
-json_file = open('models/modelR3_5.json', 'r')
+json_file = open('models/modelR3_6.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/modelR3_5.h5")
+loaded_model.load_weights("models/modelR3_6.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data
@@ -56,6 +56,6 @@ testY4 = testY4 * maxY2
 
 #preds = pd.DataFrame(preds, columns=['x1','x2','y1','y2']).to_csv('prediction.csv')
 dfx = pd.DataFrame({'image_name' : df["image_name"], 'x1' : testY1, 'x2' : testY2, 'y1' : testY3, 'y2' : testY4})
-dfx.to_csv("res/testR3_5.csv", index=False)
+dfx.to_csv("res/testR3_6.csv", index=False)
 
 print('Predictions saved')

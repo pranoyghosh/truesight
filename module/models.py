@@ -23,7 +23,7 @@ def create_mlp(dim, regress=False):
     # return our model
     return model
 
-def create_cnn(width, height, depth, filters=(16, 32, 64, 128, 256), regress=False):
+def create_cnn(width, height, depth, filters=(16, 32, 64, 128), regress=False):
     # initialize the input shape and channel dimension, assuming
     # TensorFlow/channels-last ordering
     inputShape = (height, width, depth)
@@ -50,9 +50,9 @@ def create_cnn(width, height, depth, filters=(16, 32, 64, 128, 256), regress=Fal
     x = Dense(16)(x)
     x = Activation("relu")(x)
     x = BatchNormalization(axis=chanDim)(x)
-    x = Dropout(0.5)(x)
+    x = Dropout(0.625)(x)
 
-    x = Dense(8)(x)
+    x = Dense(3)(x)
     x = Activation("relu")(x)
 
 
