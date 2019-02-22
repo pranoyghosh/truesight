@@ -52,7 +52,7 @@ def create_cnn(width, height, depth, filters=(16, 32, 64, 128, 256), regress=Fal
     x = BatchNormalization(axis=chanDim)(x)
     x = Dropout(0.5)(x)
 
-    x = Dense(4)(x)
+    x = Dense(8)(x)
     x = Activation("relu")(x)
 
 
