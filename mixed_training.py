@@ -49,14 +49,14 @@ model = Model(inputs=cnn.input, outputs=[x1,x2,y1,y2])
 genCustom = datasets.custom_genimg(files,df,32)
 #opt = Adam(lr=1e-3, decay=1e-3 / 40)
 #model.compile(loss="mean_absolute_percentage_error", optimizer=opt)
-sgd = optimizers.SGD(lr=1e-3, decay=1e-3/40, momentum=0.8, nesterov=True)
-model.compile(optimizer=sgd, loss='mean_squared_error', metrics={'op1':iou.mean_iou, 'op2':iou.mean_iou, 'op3':iou.mean_iou,'op4':iou.mean_iou})
+sgd = optimizers.SGD(lr=0.01, decay=0.01/30, momentum=0.9, nesterov=True)
+model.compile(optimizer=sgd, loss='mean_squared_error', metrics={'op1':'accuracy', 'op2':'accuracy', 'op3':'accuracy','op4':'accuracy'})
 
 # train the model
 print("[INFO] training model...")
 model.fit_generator(
     genCustom,
-    epochs=40, steps_per_epoch=750)
+    epochs=30, steps_per_epoch=750)
 
 # evaluate the model
 #scores = model.evaluate_generator(genCustom, steps=750, verbose=0)
@@ -64,8 +64,8 @@ model.fit_generator(
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("models/modelR3_4.json", "w") as json_file:
+with open("models/modelR3_5.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("models/modelR3_4.h5")
+model.save_weights("models/modelR3_5.h5")
 print("Saved model to disk")
