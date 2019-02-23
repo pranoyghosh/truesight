@@ -44,8 +44,8 @@ def custom_genimg(files,df,bsize=6):
     while True:
         if n>=24000:
             n=0
-        batch_paths=files[n:n+bsize]
-        #batch_paths=np.random.choice(a=files,size=bsize)
+        #batch_paths=files[n:n+bsize]
+        batch_paths=np.random.choice(a=files,size=bsize)
         batch_input=[]
         batch_outputx1=[]
         batch_outputx2=[]
