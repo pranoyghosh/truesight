@@ -29,7 +29,7 @@ df = pd.read_csv(inputPath, skiprows=[0], header=None, names=colsdf)
 print("[INFO] processing data...")
 
 #cnn = models.create_cnn(128, 128, 3, regress=False)
-cnn = models.create_cnnS(96, 96, 3, regress=False)
+cnn = models.create_cnnS(288, 288, 3, regress=False)
 
 # our final FC layer head will have two dense layers, the final one
 # being our regression head
