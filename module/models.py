@@ -70,8 +70,8 @@ def create_cnnS(width, height, depth, regress=False):
 
     model.add(Dense(8))
     model.add(Activation("relu"))
-    model.add(Dense(4))
-    model.add(Activation("relu"))
+    #model.add(Dense(4))
+    #model.add(Activation("relu"))
     # check to see if the regression node should be added
     if regress:
         model.add(Dense(1, activation="linear"))
