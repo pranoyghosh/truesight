@@ -14,12 +14,12 @@ def bb_iou(boxA, boxB):
 	yB = min(boxA[3], boxB[3])
 
 	# compute the area of intersection rectangle
-	interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
+	interArea = max(0, xB - xA) * max(0, yB - yA)
 
 	# compute the area of both the prediction and ground-truth
 	# rectangles
-	boxAArea = (boxA[1] - boxA[0] + 1) * (boxA[3] - boxA[2] + 1)
-	boxBArea = (boxB[1] - boxB[0] + 1) * (boxB[3] - boxB[2] + 1)
+	boxAArea = (boxA[1] - boxA[0]) * (boxA[3] - boxA[2])
+	boxBArea = (boxB[1] - boxB[0]) * (boxB[3] - boxB[2])
 
 	# compute the intersection over union by taking the intersection
 	# area and dividing it by the sum of prediction + ground-truth
