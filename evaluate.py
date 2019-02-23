@@ -33,7 +33,7 @@ print("[INFO] loading attributes...")
 iou=[]
 trainPath = "/home/harshit1201/Desktop/Project:TrueSight/training_set.csv"
 img_data = "/home/harshit1201/Desktop/Project:TrueSight/Dataset/images"
-tarpath="eval/tarR3_7.csv"
+tarpath="eval/tarR3_8.csv"
 col1=["image_name"]
 files=[]
 df = pd.read_csv(trainPath, skiprows=[0], header=None, names=col1)
@@ -46,12 +46,12 @@ for filename,p,n,e in df.index.values:
 # range [0, 1]
 genSCustom = datasets.custom_gentest(files,64)
 # load json and create model
-json_file = open('models/modelR3_7.json', 'r')
+json_file = open('models/modelR3_8.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
 loaded_model = model_from_json(loaded_model_json)
 # load weights into new model
-loaded_model.load_weights("models/modelR3_7.h5")
+loaded_model.load_weights("models/modelR3_8.h5")
 print("Loaded model from disk")
 
 # make predictions on the testing data
